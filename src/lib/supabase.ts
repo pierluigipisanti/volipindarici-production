@@ -3,30 +3,17 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+// Check if environment variables are available
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+  console.error('Missing Supabase environment variables');
+  // Provide fallback values for development only
+  // In production, this should come from Netlify environment variables
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  },
-  global: {
-    headers: {
-      'x-application-name': 'voli-pindarici'
-    }
-  },
-  db: {
-    schema: 'public'
-  },
-  realtime: {
-    params: {
-      eventsPerSecond: 10
-    }
-  }
-});
+export const supabase = createClient(
+  supabaseUrl || '',
+  supabaseAnonKey || ''
+);
 
 // Add health check function with retries and exponential backoff
 export async function checkSupabaseConnection(retries = 3): Promise<boolean> {

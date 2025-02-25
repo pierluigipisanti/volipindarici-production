@@ -5,6 +5,11 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  # Only include non-sensitive environment variables here
+  # The SUPABASE_URL is generally not considered sensitive
+  VITE_SUPABASE_URL = "https://scxypdyofzvrxlweyirb.supabase.co"
+  # DO NOT include API keys or sensitive data here
+  # Set ANTHROPIC_API_KEY and VITE_SUPABASE_ANON_KEY in Netlify dashboard
 
 [functions]
   node_bundler = "esbuild"
