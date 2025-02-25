@@ -36,6 +36,9 @@ export async function createChatMessage(messages: Array<{ role: string, content:
 
 export async function sendMessageToAnthropic(messages: Message[]): Promise<string> {
   try {
+    // We don't need to add context here anymore since the system prompt is added on the server
+    // The system prompt in netlify/functions/system-prompt.ts will be used
+    
     const response = await fetch('/.netlify/functions/anthropic', {
       method: 'POST',
       headers: {

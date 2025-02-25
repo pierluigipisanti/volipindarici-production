@@ -1,5 +1,6 @@
 import { Handler } from '@netlify/functions';
 import Anthropic from '@anthropic-ai/sdk';
+import { systemPrompt } from './system-prompt';
 
 // Initialize the Anthropic client with environment variable only
 const anthropic = new Anthropic({
@@ -41,10 +42,13 @@ export const handler: Handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid messages format' }) };
     }
 
+    // Always include the system prompt as the first message
+    const messagesWithSystemPrompt = [systemPrompt, ...messages];
+
     const response = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20241022",
       max_tokens: 1024,
-      messages: messages
+      messages: messagesWithSystemPrompt
     });
 
     return { statusCode: 200, headers, body: JSON.stringify(response) };
