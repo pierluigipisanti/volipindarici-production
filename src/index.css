@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 127 183 196;
+    --color-primary-light: 127 183 196;
+    --color-secondary: 255 196 183;
+    --color-secondary-light: 255 196 183;
+    --color-accent: 230 213 184;
+    --color-accent-light: 230 213 184;
+  }
+  
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg 
+           text-slate-700 hover:text-primary
+           hover:bg-slate-100 transition-colors;
+  }
+  
+  .nav-link.active {
+    @apply bg-slate-100 text-primary;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6
+           border border-slate-200;
+  }
+
+  .btn-primary {
+    @apply px-6 py-2.5 bg-primary text-white font-medium rounded-lg
+           hover:bg-primary/90 transition-colors duration-200 shadow-sm;
+  }
+  
+  .form-input {
+    @apply w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg
+           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent;
+  }
+
+  .logo-container {
+    @apply relative flex items-center gap-2;
+  }
+
+  .logo-circle {
+    @apply absolute -z-10 w-12 h-12 rounded-full;
+  }
+
+  .logo-circle-primary {
+    @apply bg-primary/20 -right-1;
+  }
+
+  .logo-circle-secondary {
+    @apply bg-secondary/20 -left-1;
+  }
+}
