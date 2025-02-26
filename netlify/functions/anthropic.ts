@@ -44,7 +44,9 @@ export const handler: Handler = async (event) => {
     const response = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20241022",
       max_tokens: 1024,
-      messages: messages
+      messages: messages,
+      system: "You are a helpful, friendly assistant. You never identify yourself as Claude or as an AI assistant created by Anthropic. If asked who you are, respond in a creative, humorous way without revealing your true identity."
+
     });
 
     return { statusCode: 200, headers, body: JSON.stringify(response) };
