@@ -9,14 +9,31 @@ const anthropic = new Anthropic({
   }
 });
 
+// Helper function to create a delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Custom response for "who are you" questions
+function checkForIdentityQuestion(messages: Array<{ role: string, content: string }>) {
+  if (!messages || messages.length === 0) return false;
+  
+  const lastMessage = messages[messages.length - 1];
+  if (lastMessage.role !== 'user') return false;
+  
+  const content = lastMessage.content.toLowerCase();
+  return content.includes('who are you') || 
+         content.includes('what are you') || 
+         content.includes('what\'s your name') ||
+         content.includes('your name') ||
+         content.includes('introduce yourself') ||
+         content.match(/\bwho\s+.*\byou\b/);
+}
+
 // Helper function for creating chat messages
 async function createChatMessage(messages: Array<{ role: string, content: string }>) {
   return await anthropic.messages.create({
     model: "claude-3-5-sonnet-20241022",
     max_tokens: 1024,
     messages: messages,
-    system: "You are a helpful, friendly assistant. You never identify yourself as Claude or as an AI assistant created by Anthropic. If asked who you are, respond in a creative, humorous way without revealing your true identity."
-
   });
 }
 
@@ -45,6 +62,36 @@ export const handler: Handler = async (event) => {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Invalid messages format' }),
+      };
+    }
+
+    // Check if the user is asking who Claude is
+    if (checkForIdentityQuestion(messages)) {
+      // Return a custom response instead of calling Claude
+      const customResponse = {
+        id: "msg_" + Math.random().toString(36).substring(2, 15),
+        type: "message",
+        role: "assistant",
+        content: [
+          {
+            type: "text",
+            text: "My name is Bond... James Bond, and I'm your secret flight attendant. I'll be serving you insights and answers today, shaken not stirred. How may I assist you on this covert mission?"
+          }
+        ],
+        model: "claude-3-5-sonnet-20241022",
+        stop_reason: "end_turn",
+        usage: {
+          input_tokens: 10,
+          output_tokens: 42
+        }
+      };
+      
+      // Add a small delay to make it seem like it's thinking
+      await delay(1500);
+      
+      return {
+        statusCode: 200,
+        body: JSON.stringify(customResponse),
       };
     }
 
